@@ -1,10 +1,10 @@
-package com.deepblog.minicoupang.domain.stock.domain;
+package com.deepblog.minicoupang.domain.product.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.deepblog.minicoupang.domain.stock.exception.InsufficientStockException;
-import com.deepblog.minicoupang.domain.stock.exception.InvalidStockException;
+import com.deepblog.minicoupang.global.exception.BusinessException;
+import com.deepblog.minicoupang.global.exception.ErrorCode;
 import org.junit.jupiter.api.Test;
 
 class OptionStockTest {
@@ -20,21 +20,24 @@ class OptionStockTest {
     @Test
     void forOption_nullOptionId_throws() {
         assertThatThrownBy(() -> OptionStock.forOption(null, 100L))
-            .isInstanceOf(InvalidStockException.class)
+            .isInstanceOf(BusinessException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_STOCK)
             .hasMessageContaining("옵션");
     }
 
     @Test
     void forOption_zeroOptionId_throws() {
         assertThatThrownBy(() -> OptionStock.forOption(0L, 100L))
-            .isInstanceOf(InvalidStockException.class)
+            .isInstanceOf(BusinessException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_STOCK)
             .hasMessageContaining("옵션");
     }
 
     @Test
     void forOption_negativeInitialQuantity_throws() {
         assertThatThrownBy(() -> OptionStock.forOption(42L, -1L))
-            .isInstanceOf(InvalidStockException.class)
+            .isInstanceOf(BusinessException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_STOCK)
             .hasMessageContaining("재고");
     }
 
@@ -59,7 +62,8 @@ class OptionStockTest {
         OptionStock stock = OptionStock.forOption(42L, 100L);
 
         assertThatThrownBy(() -> stock.decrease(0L))
-            .isInstanceOf(InvalidStockException.class)
+            .isInstanceOf(BusinessException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_STOCK)
             .hasMessageContaining("차감");
     }
 
@@ -68,7 +72,8 @@ class OptionStockTest {
         OptionStock stock = OptionStock.forOption(42L, 100L);
 
         assertThatThrownBy(() -> stock.decrease(-1L))
-            .isInstanceOf(InvalidStockException.class)
+            .isInstanceOf(BusinessException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_STOCK)
             .hasMessageContaining("차감");
     }
 
@@ -77,7 +82,8 @@ class OptionStockTest {
         OptionStock stock = OptionStock.forOption(42L, 100L);
 
         assertThatThrownBy(() -> stock.decrease(101L))
-            .isInstanceOf(InsufficientStockException.class)
+            .isInstanceOf(BusinessException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INSUFFICIENT_STOCK)
             .hasMessageContaining("재고");
     }
 
@@ -104,7 +110,8 @@ class OptionStockTest {
         OptionStock stock = OptionStock.forOption(42L, 100L);
 
         assertThatThrownBy(() -> stock.increase(0L))
-            .isInstanceOf(InvalidStockException.class)
+            .isInstanceOf(BusinessException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_STOCK)
             .hasMessageContaining("입고");
     }
 
@@ -113,7 +120,8 @@ class OptionStockTest {
         OptionStock stock = OptionStock.forOption(42L, 100L);
 
         assertThatThrownBy(() -> stock.increase(-1L))
-            .isInstanceOf(InvalidStockException.class)
+            .isInstanceOf(BusinessException.class)
+            .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_STOCK)
             .hasMessageContaining("입고");
     }
 }
